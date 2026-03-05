@@ -5,39 +5,22 @@ pipeline {
 
         stage('Checkout from GitHub') {
             steps {
-                git branch: 'master',
+                git branch: 'main',
                     url: 'https://github.com/Roopa-0501/node-docker-app.git'
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh '''
-                docker build -t node-docker-app:${BUILD_NUMBER} .
-                docker tag node-docker-app:${BUILD_NUMBER} Roopa-0501/node-docker-app:${BUILD_NUMBER}
-                '''
+                sh 'docker build -t node-docker-app:${BUILD_NUMBER} .'
             }
         }
 
-        // stage('Push Docker Image') {
-        //     steps {
-        //         sh 'docker push Roopa-0501/node-docker-app:${BUILD_NUMBER}'
-        //     }
-        // }
-        
-        stage('Create container') {
+        stage('Run Container') {
             steps {
-                sh 'docker run -d -p 3000:8080 Roopa-0501/node-docker-app:${BUILD_NUMBER}'
+                sh 'docker run -d -p 3000:8080 node-docker-app:${BUILD_NUMBER}'
             }
         }
-
-
 
     }
 }
